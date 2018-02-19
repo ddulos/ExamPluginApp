@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+      prefWidth="600.0" fx:controller="han.ica.asd.controllers.PerformExamController"
+      xmlns="http://javafx.com/javafx/8.0.71" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <AnchorPane prefHeight="50.0" prefWidth="200.0">
+            <children>
+                <Button layoutX="14.0" layoutY="13.0" mnemonicParsing="false" text="Terug" onAction="#backToMenu"/>
+            </children>
+        </AnchorPane>
+        <ScrollPane prefHeight="350.0" prefWidth="200.0">
+            <content>
+                <VBox>
+                    <children>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="350" prefWidth="600.0"/>
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </children>
+</VBox>

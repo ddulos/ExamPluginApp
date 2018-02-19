@@ -1,0 +1,41 @@
+{
+  "name": "Toets 1",
+  "course": "SWA",
+  "questions": [
+    {
+      "questionType": "freeInput",
+      "questionPhrasing": "What is an advantage of a DCAR over an ATAM?",
+      "points": 5,
+      "questionContext": {
+        "fieldAmount": 1
+      }
+    },
+    {
+      "questionType": "freeInput",
+      "questionPhrasing": "Name 2 views related to decisions in a Software Architecture Document",
+      "points": 7,
+      "questionContext": {
+        "fieldAmount": 2
+      }
+    },
+    {
+      "questionType": "multipleChoice",
+      "questionPhrasing": "Which model is shown in the implementation view in Kruchten's 4+1 view model?",
+      "points": 3,
+      "questionContext": {
+        "options": [
+          {
+            "name": "Domain Model"
+          },
+          {
+            "name": "Class Diagram"
+          },
+          {
+            "name": "Activity Diagram"
+          }
+        ],
+        "singleSelection": true
+      }
+    }
+  ]
+}
