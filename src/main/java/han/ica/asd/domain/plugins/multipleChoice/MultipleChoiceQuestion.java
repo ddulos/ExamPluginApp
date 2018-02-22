@@ -1,4 +1,4 @@
-package han.ica.asd.domain.plugins.freeInput;
+package han.ica.asd.domain.plugins.multipleChoice;
 
 import han.ica.asd.domain.Question;
 import han.ica.asd.domain.interfaces.IQuestionType;
@@ -6,9 +6,9 @@ import han.ica.asd.domain.interfaces.IQuestionType;
 /**
  * TODO Javadoc
  */
-public class FreeInputQuestion extends Question implements IQuestionType {
+public class MultipleChoiceQuestion extends Question implements IQuestionType {
 
-    public FreeInputQuestion(String questionPhrase, int points) {
+    public MultipleChoiceQuestion(String questionPhrase, int points) {
         super(questionPhrase, points);
     }
 

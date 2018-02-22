@@ -1,7 +1,14 @@
 package han.ica.asd.controllers;
 
 import han.ica.asd.domain.Exam;
+import han.ica.asd.domain.Question;
+import han.ica.asd.domain.interfaces.IQuestionView;
+import han.ica.asd.domain.plugins.freeInput.FreeInputQuestionPlugin;
+import han.ica.asd.domain.plugins.freeInput.FreeInputQuestionView;
+import han.ica.asd.domain.plugins.multipleChoice.MultipleChoiceQuestionPlugin;
+import han.ica.asd.domain.plugins.multipleChoice.MultipleChoiceQuestionView;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -10,59 +17,101 @@ import javafx.stage.Stage;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import sun.misc.IOUtils;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import static java.lang.System.out;
-
-/**
- * TODO Javadoc
- */
 public class PerformExamController {
-    public VBox mainPane;
-    private String fileName = "json/file1.json";
 
-    public PerformExamController() {
-        getExam();
+    private static final Logger logger = Logger.getLogger(PerformExamController.class.getName());
+
+    @FXML
+    private VBox rootUI;
+    @FXML
+    private VBox questionsPane;
+
+    void setupPane(Map<String, Object> namespace) throws IOException {
+        if (!namespace.isEmpty()) {
+            questionsPane = (VBox) namespace.get("questionsPane");
+            rootUI = (VBox) namespace.get("rootUI");
+            getExam();
+        } else {
+            logger.log(Level.SEVERE, "Error while retrieving namespace!");
+        }
     }
 
-    private void getExam() {
+    private void getExam() throws IOException {
         JSONParser jsonParser = new JSONParser();
 
         try {
+            // Retrieving File from resources.
             File jsonFile = new File(getClass().getResource("/json/example.json").toURI());
-
             FileReader fileReader = new FileReader(jsonFile);
 
+            // Parse json String into JSONObject.
             JSONObject jsonObject = (JSONObject) jsonParser.parse(fileReader);
-
             String name = (String) jsonObject.get("name");
             String course = (String) jsonObject.get("course");
-            JSONArray questionList = (JSONArray) jsonObject.get("questions");
+            JSONArray questionsJsonArray = (JSONArray) jsonObject.get("questions");
 
             Exam exam = new Exam(name, course);
 
-            out.println("Name: " + name);
-            out.println("Course: " + course);
-            out.println("\nQuestions:");
-            for (int i = 0; i < questionList.size(); i++) {
-                JSONObject questionJson = (JSONObject) questionList.get(i);
+            List<Question> questionList = new ArrayList<Question>();
+            for (Object object : questionsJsonArray) {
+                JSONObject questionJson = (JSONObject) object;
 
                 String questionPhrasing = (String) questionJson.get("questionPhrasing");
-                int points = Integer.valueOf(String.valueOf(questionJson.get("points")));
-                out.println(questionPhrasing + " - worth " + points + " points");
+                int points = Integer.parseInt(String.valueOf(questionJson.get("points")));
 
-//                Question question = new Question();
+                String type = (String) questionJson.get("questionType");
+                JSONObject context = (JSONObject) questionJson.get("questionContext");
+
+
+                logger.log(Level.FINE, "Context: " + context);
+
+                Question question = null;
+                IQuestionView questionView = null;
+
+                if (type.equals("freeInput")) {
+                    FreeInputQuestionPlugin freeInputQuestionPlugin = new FreeInputQuestionPlugin();
+                    question = (Question) freeInputQuestionPlugin.createQuestion(questionPhrasing, points);
+                    questionView = freeInputQuestionPlugin.createView();
+
+                } else if (type.equals("multipleChoice")) {
+                    MultipleChoiceQuestionPlugin freeInputQuestionPlugin = new MultipleChoiceQuestionPlugin();
+                    question = (Question) freeInputQuestionPlugin.createQuestion(questionPhrasing, points);
+                    questionView = freeInputQuestionPlugin.createView();
+
+                } else {
+                    logger.log(Level.WARNING, "No known type found!");
+                }
+
+                if (questionsPane != null && questionView != null) {
+                    questionsPane.getChildren().add(questionView.getView(questionPhrasing, points, context));
+                } else {
+                    logger.log(Level.SEVERE, "Error while adding child to pane!");
+                }
+
+                questionList.add(question);
             }
+            Question[] questions = new Question[questionList.size()];
 
+            exam.setQuestions(questionList.toArray(questions));
+
+            for (Question question : questions) {
+                logger.log(Level.FINE, question.getQuestionPhrase() + " - worth " + question.getPoints() + " points");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public void backToMenu(ActionEvent actionEvent) throws IOException {
-        Stage window = (Stage) mainPane.getScene().getWindow();
+        Stage window = (Stage) rootUI.getScene().getWindow();
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/menu.fxml"));
         Parent root = loader.load();

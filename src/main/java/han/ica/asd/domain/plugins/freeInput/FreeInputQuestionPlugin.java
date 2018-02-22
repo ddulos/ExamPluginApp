@@ -7,17 +7,21 @@ import han.ica.asd.domain.interfaces.IQuestionView;
 /**
  * TODO Javadoc
  */
-public class FreeInputQuestionPlugin implements IPlugin{
+public class FreeInputQuestionPlugin implements IPlugin {
 
     public String getID() {
         return null;
     }
 
-    public IQuestionType createQuestion() {
-        return null;
+    public IQuestionType createQuestion(String questionPhrase, int points) {
+        FreeInputQuestion freeInputQuestion = new FreeInputQuestion(questionPhrase, points);
+
+        return freeInputQuestion;
     }
 
     public IQuestionView createView() {
-        return null;
+        FreeInputQuestionView freeInputQuestionView = new FreeInputQuestionView();
+
+        return freeInputQuestionView;
     }
 }

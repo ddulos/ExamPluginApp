@@ -5,6 +5,6 @@ package han.ica.asd.domain.interfaces;
  */
 public interface IPlugin {
     String getID();
-    IQuestionType createQuestion();
+    IQuestionType createQuestion(String questionPhrase, int points);
     IQuestionView createView();
 }
