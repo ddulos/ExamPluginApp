@@ -26,10 +26,11 @@ public class MenuController {
         Parent root = loader.load();
 
         Map<String, Object> namespace = loader.getNamespace();
-        out.println(namespace.isEmpty());
+//        out.println(namespace.isEmpty());
 
         PerformExamController performExamController = loader.getController();
         performExamController.setupPane(namespace);
+//        performExamController.getNamespace();
 
         window.setScene(new Scene(root, 600, 400));
     }

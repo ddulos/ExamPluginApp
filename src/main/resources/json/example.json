@@ -36,6 +36,31 @@
         ],
         "singleSelection": true
       }
+    },
+    {
+      "questionType": "multipleChoice",
+      "questionPhrasing": "Which of these tactics do NOT support Availability of a system (multiple answers possible)?",
+      "points": 5,
+      "questionContext": {
+        "options": [
+          {
+            "name": "Heartbeat"
+          },
+          {
+            "name": "Ignore Faulty behavior"
+          },
+          {
+            "name": "Restrict Dependencies"
+          },
+          {
+            "name": "Limit Access"
+          },
+          {
+            "name": "Active Redundancy"
+          }
+        ],
+        "singleSelection": false
+      }
     }
   ]
 }

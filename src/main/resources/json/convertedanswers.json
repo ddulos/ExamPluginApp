@@ -1,0 +1,53 @@
+{
+  "name": "Toets 1",
+  "questions": [
+    {
+      "questionPhrasing": "What is an advantage of a DCAR over an ATAM?",
+      "givenAnswer": {
+        "answers: ": [
+          {
+            "freeInput-1": "dsadsa"
+          }
+        ]
+      },
+      "questionType": "freeInput"
+    },
+    {
+      "questionPhrasing": "Name 2 views related to decisions in a Software Architecture Document",
+      "givenAnswer": {
+        "answers: ": [
+          {
+            "freeInput-3": "dsadsa"
+          },
+          {
+            "freeInput-2": "dsad"
+          }
+        ]
+      },
+      "questionType": "freeInput"
+    },
+    {
+      "questionPhrasing": "Which model is shown in the implementation view in Kruchten's 4+1 view model?",
+      "givenAnswer": {
+        "answers: ": [
+          {
+            "mChoice-3": "Activity Diagram"
+          }
+        ]
+      },
+      "questionType": "multipleChoice"
+    },
+    {
+      "questionPhrasing": "Which of these tactics do NOT support Availability of a system (multiple answers possible)?",
+      "givenAnswer": {
+        "answers: ": [
+          {
+            "mChoice-7": "Limit Access"
+          }
+        ]
+      },
+      "questionType": "multipleChoice"
+    }
+  ],
+  "course": "SWA"
+}

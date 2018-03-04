@@ -1,11 +1,11 @@
 package han.ica.asd.domain.interfaces;
 
+import org.json.simple.JSONObject;
+
 /**
  * TODO Javadoc
  */
 public interface IQuestionType {
-    String toText();
-    void setGivenAnswer(String answer);
-    String getGivenAnswer();
+    JSONObject getGivenAnswer();
     int checkGivenAnswer();
 }

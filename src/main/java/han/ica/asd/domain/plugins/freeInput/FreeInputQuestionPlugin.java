@@ -3,25 +3,33 @@ package han.ica.asd.domain.plugins.freeInput;
 import han.ica.asd.domain.interfaces.IPlugin;
 import han.ica.asd.domain.interfaces.IQuestionType;
 import han.ica.asd.domain.interfaces.IQuestionView;
+import org.json.simple.JSONObject;
 
 /**
  * TODO Javadoc
  */
 public class FreeInputQuestionPlugin implements IPlugin {
 
-    public String getID() {
-        return null;
+    private String pluginID = "MultipleChoice";
+
+    private FreeInputQuestion question;
+    private FreeInputQuestionView questionView;
+
+
+    public FreeInputQuestionPlugin(String questionPhrase, int points, JSONObject context, String questionType) {
+        question = new FreeInputQuestion(questionPhrase, points, context, questionType);
+        questionView = new FreeInputQuestionView(question);
     }
 
-    public IQuestionType createQuestion(String questionPhrase, int points) {
-        FreeInputQuestion freeInputQuestion = new FreeInputQuestion(questionPhrase, points);
-
-        return freeInputQuestion;
+    public String getPluginID() {
+        return pluginID;
     }
 
-    public IQuestionView createView() {
-        FreeInputQuestionView freeInputQuestionView = new FreeInputQuestionView();
+    public IQuestionType getQuestion() {
+        return question;
+    }
 
-        return freeInputQuestionView;
+    public IQuestionView getQuestionView() {
+        return questionView;
     }
 }

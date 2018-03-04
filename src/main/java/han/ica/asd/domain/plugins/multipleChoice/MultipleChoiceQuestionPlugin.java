@@ -3,25 +3,33 @@ package han.ica.asd.domain.plugins.multipleChoice;
 import han.ica.asd.domain.interfaces.IPlugin;
 import han.ica.asd.domain.interfaces.IQuestionType;
 import han.ica.asd.domain.interfaces.IQuestionView;
+import org.json.simple.JSONObject;
 
 /**
  * TODO Javadoc
  */
 public class MultipleChoiceQuestionPlugin implements IPlugin {
 
-    public String getID() {
-        return null;
+    private String pluginID = "MultipleChoice";
+
+    private MultipleChoiceQuestion question;
+    private MultipleChoiceQuestionView questionView;
+
+
+    public MultipleChoiceQuestionPlugin(String questionPhrase, int points, JSONObject context, String questionType) {
+        question = new MultipleChoiceQuestion(questionPhrase, points, context, questionType);
+        questionView = new MultipleChoiceQuestionView(question);
     }
 
-    public IQuestionType createQuestion(String questionPhrase, int points) {
-        MultipleChoiceQuestion multipleChoiceQuestion = new MultipleChoiceQuestion(questionPhrase, points);
-
-        return multipleChoiceQuestion;
+    public String getPluginID() {
+        return pluginID;
     }
 
-    public IQuestionView createView() {
-        MultipleChoiceQuestionView multipleChoiceQuestionView = new MultipleChoiceQuestionView();
+    public IQuestionType getQuestion() {
+        return question;
+    }
 
-        return multipleChoiceQuestionView;
+    public IQuestionView getQuestionView() {
+        return questionView;
     }
 }
