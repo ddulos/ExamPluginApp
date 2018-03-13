@@ -1,10 +1,12 @@
 package han.ica.asd.domain.interfaces;
 
-/**
- * TODO Javadoc
- */
+import han.ica.asd.domain.Question;
+import org.json.simple.JSONObject;
+
 public interface IPlugin {
     String getPluginID();
-    IQuestionType getQuestion();
-    IQuestionView getQuestionView();
+
+    IQuestionType createQuestion(String questionPhrase, int points, JSONObject context, String questionType);
+
+    IQuestionView createQuestionView(Question question);
 }

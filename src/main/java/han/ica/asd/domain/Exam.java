@@ -1,8 +1,5 @@
 package han.ica.asd.domain;
 
-/**
- * TODO Javadoc
- */
 public class Exam {
     private String name;
     private String course;

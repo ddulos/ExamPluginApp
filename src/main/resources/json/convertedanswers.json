@@ -6,7 +6,7 @@
       "givenAnswer": {
         "answers: ": [
           {
-            "freeInput-1": "dsadsa"
+            "freeInput-1": "Antwoord"
           }
         ]
       },
@@ -17,10 +17,10 @@
       "givenAnswer": {
         "answers: ": [
           {
-            "freeInput-3": "dsadsa"
+            "freeInput-3": "Antwoord"
           },
           {
-            "freeInput-2": "dsad"
+            "freeInput-2": "Antwoord"
           }
         ]
       },
@@ -31,7 +31,7 @@
       "givenAnswer": {
         "answers: ": [
           {
-            "mChoice-3": "Activity Diagram"
+            "mChoice-2": "Class Diagram"
           }
         ]
       },
@@ -42,7 +42,10 @@
       "givenAnswer": {
         "answers: ": [
           {
-            "mChoice-7": "Limit Access"
+            "mChoice-5": "Ignore Faulty behavior"
+          },
+          {
+            "mChoice-6": "Restrict Dependencies"
           }
         ]
       },

@@ -3,12 +3,27 @@
   "questions": [
     {
       "questionPhrasing": "What is an advantage of a DCAR over an ATAM?",
-      "givenAnswer": null,
+      "givenAnswer": {
+        "answers: ": [
+          {
+            "freeInput-1": "Eindelijk"
+          }
+        ]
+      },
       "questionType": "freeInput"
     },
     {
       "questionPhrasing": "Name 2 views related to decisions in a Software Architecture Document",
-      "givenAnswer": null,
+      "givenAnswer": {
+        "answers: ": [
+          {
+            "freeInput-3": "Geweldige programma"
+          },
+          {
+            "freeInput-2": "Werkt dit"
+          }
+        ]
+      },
       "questionType": "freeInput"
     },
     {
@@ -16,7 +31,7 @@
       "givenAnswer": {
         "answers: ": [
           {
-            "mChoice-3": "Activity Diagram"
+            "mChoice-2": "Class Diagram"
           }
         ]
       },
@@ -28,6 +43,9 @@
         "answers: ": [
           {
             "mChoice-5": "Ignore Faulty behavior"
+          },
+          {
+            "mChoice-6": "Restrict Dependencies"
           }
         ]
       },

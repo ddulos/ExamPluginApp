@@ -4,12 +4,10 @@ import han.ica.asd.domain.Exam;
 import han.ica.asd.domain.Question;
 import han.ica.asd.domain.interfaces.IPlugin;
 import han.ica.asd.domain.interfaces.IQuestionView;
-import han.ica.asd.domain.plugins.freeInput.FreeInputQuestionPlugin;
-import han.ica.asd.domain.plugins.multipleChoice.MultipleChoiceQuestionPlugin;
+import han.ica.asd.utility.PluginHandler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
@@ -18,9 +16,10 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -36,35 +35,17 @@ public class PerformExamController {
     @FXML
     private VBox questionsPane;
 
+    private PluginHandler pluginHandler = new PluginHandler();
     private Exam currentExam;
-    private HashMap<String, Class> pluginsMap;
 
     void setupPane(Map<String, Object> namespace) throws IOException {
         if (!namespace.isEmpty()) {
             questionsPane = (VBox) namespace.get("questionsPane");
             rootUI = (VBox) namespace.get("rootUI");
+            pluginHandler.loadPlugins();
             getExam();
-
-            for (Node node : getAllNodes(questionsPane)) {
-//                System.out.println("Node ID: " + node.getId());
-            }
         } else {
             logger.log(Level.SEVERE, "Error while retrieving namespace!");
-        }
-    }
-
-    private static List<Node> getAllNodes(Parent root) {
-        ArrayList<Node> nodes = new ArrayList<Node>();
-        addAllDescendants(root, nodes);
-        return nodes;
-    }
-
-    private static void addAllDescendants(Parent parent, ArrayList<Node> nodes) {
-        for (Node node : parent.getChildrenUnmodifiable()) {
-            if (node.getId() != null)
-                nodes.add(node);
-            if (node instanceof Parent)
-                addAllDescendants((Parent) node, nodes);
         }
     }
 
@@ -91,7 +72,6 @@ public class PerformExamController {
 
     private Question[] getQuestions(JSONArray questionsJsonArray, Exam exam) {
         List<Question> questionList = new ArrayList<>();
-        pluginsMap = new HashMap<>();
 
         for (Object object : questionsJsonArray) {
             JSONObject questionJson = (JSONObject) object;
@@ -104,22 +84,13 @@ public class PerformExamController {
 
             Question question = null;
             IQuestionView questionView = null;
+            try {
+                IPlugin plugin = pluginHandler.getLoadedPlugins().get(questionType);
+                question = (Question) plugin.createQuestion(questionPhrasing, points, context, questionType);
+                questionView = plugin.createQuestionView(question);
 
-            pluginsMap.put(questionType, IPlugin.class);
-
-
-            if (questionType.equals("freeInput")) {
-                FreeInputQuestionPlugin freeInputQuestionPlugin = new FreeInputQuestionPlugin(questionPhrasing, points, context, questionType);
-                question = (Question) freeInputQuestionPlugin.getQuestion();
-                questionView = freeInputQuestionPlugin.getQuestionView();
-
-            } else if (questionType.equals("multipleChoice")) {
-                MultipleChoiceQuestionPlugin multipleChoiceQuestionPlugin = new MultipleChoiceQuestionPlugin(questionPhrasing, points, context, questionType);
-                question = (Question) multipleChoiceQuestionPlugin.getQuestion();
-                questionView = multipleChoiceQuestionPlugin.getQuestionView();
-
-            } else {
-                logger.log(Level.WARNING, "No known type found!");
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
 
             if (questionsPane != null && questionView != null) {
@@ -167,9 +138,9 @@ public class PerformExamController {
 
 
         System.out.println(examJSON.toJSONString());
-//
-//        for (HashMap.Entry<String, Class> entry : pluginsMap.entrySet()) {
-//            System.out.println("Key: " + entry.getKey() + " - Value: " + entry.getValue());
-//        }
     }
 }
+
+
+
+

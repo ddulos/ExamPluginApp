@@ -3,9 +3,6 @@ package han.ica.asd.domain;
 import han.ica.asd.domain.interfaces.IQuestionType;
 import org.json.simple.JSONObject;
 
-/**
- * TODO Javadoc
- */
 public abstract class Question implements IQuestionType{
     private String questionPhrase;
     private int points;
