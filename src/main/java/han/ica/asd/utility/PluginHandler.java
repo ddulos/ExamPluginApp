@@ -3,9 +3,6 @@ package han.ica.asd.utility;
 import han.ica.asd.domain.interfaces.IPlugin;
 
 import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Enumeration;
@@ -16,85 +13,102 @@ import java.util.jar.JarFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Class for handling plugins.
+ * <p>
+ * Here the application loads plugins that will be used while for the questions in an exam.
+ * <p>
+ * The application will search for available plugins in the form of .jar files.
+ * Then the classes within the .jar file will be searched through until a class will be found that implements the IPlugin interface.
+ * From this class a new instance will be made and put in the HashMap, which the controller can use to pick the correct plugin to create the questions present in the exam.
+ */
 public class PluginHandler {
     private static final Logger logger = Logger.getLogger(PluginHandler.class.getName());
+
+    private static final String PLUGINS_SHORT_PATH = "plugins/";
+    private static final String PLUGINS_PATH = System.getProperty("user.dir") + File.separator + "plugins";
+    private static final String PLUGIN_PACKAGE_PATH = "han.ica.asd.plugin";
+
     private HashMap<String, IPlugin> loadedPlugins;
 
+    /**
+     * Load plugin jar files located in given path.
+     */
     public void loadPlugins() {
-        File dir = new File(System.getProperty("user.dir") + File.separator + "plugins");
+        File pluginDirectory = new File(PLUGINS_PATH);
         loadedPlugins = new HashMap<>();
 
-        String[] files = dir.list();
-        for (int i = 0; i < files.length; i++) {
+        for (String file : pluginDirectory.list()) {
             try {
                 // only consider files ending in ".jar"
-                if (!files[i].endsWith(".jar"))
-                    continue;
-                loadPluginClass(files[i]);
+                if (file.endsWith(".jar"))
+                    getClassesFromFile(PLUGINS_SHORT_PATH + file);
             } catch (Exception ex) {
                 logger.log(Level.SEVERE, "Something went wrong while searching for files.");
             }
         }
     }
 
-    private void loadPluginClass(String fileName) {
-        String pathToJar = "plugins/" + fileName;
-        JarFile pluginFile = null;
+    /**
+     * Get classes located in jar file.
+     *
+     * @param pathToJar Path to jar file to load the classes.
+     */
+    private void getClassesFromFile(String pathToJar) {
         try {
-            pluginFile = new JarFile(pathToJar);
-            Enumeration<JarEntry> entries = pluginFile.entries();
+            Enumeration<JarEntry> entries = new JarFile(pathToJar).entries();
 
             URL[] urls = {new URL("jar:file:" + pathToJar + "!/")};
-            try (URLClassLoader urlClassLoader = URLClassLoader.newInstance(urls)) {
+            URLClassLoader urlClassLoader = URLClassLoader.newInstance(urls);
 
-                while (entries.hasMoreElements()) {
-                    JarEntry jarEntry = entries.nextElement();
-                    if (jarEntry.isDirectory() || !jarEntry.getName().endsWith(".class")) {
-                        continue;
-                    }
+            while (entries.hasMoreElements()) {
+                JarEntry jarEntry = entries.nextElement();
+                if (!jarEntry.getName().endsWith(".class"))
+                    continue;
 
-                    loadPluginClass(urlClassLoader, jarEntry);
-                }
-            } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException | ClassNotFoundException e1) {
-                logger.log(Level.SEVERE, "Something went wrong while loading classes.");
+                loadPluginClass(urlClassLoader, getClassName(jarEntry));
             }
-
-        } catch (IOException e) {
-            logger.log(Level.SEVERE, "Something went wrong while loading the plugin file.");
-        } finally {
-            try {
-                if (pluginFile != null) {
-                    pluginFile.close();
-                }
-            } catch (IOException e) {
-                logger.log(Level.SEVERE, "Something went wrong while closing the plugin file.");
-            }
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Something went wrong while loading classes.", e);
         }
-
     }
 
+    /**
+     * Retrieve IPlugin implemented class from plugin file and save instance to HashMap.
+     *
+     * @param urlClassLoader UrlClassLoader to load classes by URL of file.
+     * @param className      Name of the class to be loaded.
+     */
     @SuppressWarnings("unchecked")
-    private void loadPluginClass(URLClassLoader urlClassLoader, JarEntry jarEntry) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
-        String className = jarEntry.getName().substring(0, jarEntry.getName().length() - 6);
-        className = className.replace('/', '.');
-        if (className.contains("han.ica.asd.plugin") && !className.contains("hello")) {
+    private void loadPluginClass(URLClassLoader urlClassLoader, String className) throws Exception {
+        if (className.contains(PLUGIN_PACKAGE_PATH)) {
             Class loadedClass = urlClassLoader.loadClass(className);
-            logger.log(Level.FINE, "Class: " + loadedClass.getName());
 
-            if (!loadedClass.isInterface()) {
-                String interfaceName = loadedClass.getInterfaces()[0].getSimpleName();
-                logger.log(Level.FINE, "interfaceName " + interfaceName);
-
-                if (interfaceName.equals(IPlugin.class.getSimpleName())) {
-                    Constructor classConstructor = loadedClass.getDeclaredConstructor();
-                    IPlugin plugin = (IPlugin) classConstructor.newInstance();
-                    loadedPlugins.put(plugin.getPluginID(), plugin);
-                    logger.log(Level.FINE, "plugin loaded with ID: " + plugin.getPluginID());
-                }
+            if (IPlugin.class.isAssignableFrom(loadedClass)) {
+                IPlugin plugin = (IPlugin) loadedClass.newInstance();
+                loadedPlugins.put(plugin.getPluginID(), plugin);
             }
         }
     }
 
+    /**
+     * Get name of the class by altering the string from given jar entry.
+     *
+     * @param jarEntry The jar entry that contains the unaltered string of the class name.
+     * @return Altered string containing the class name with package path.
+     */
+    private String getClassName(JarEntry jarEntry) {
+        String className = jarEntry.getName();
+        className = className.substring(0, jarEntry.getName().length() - 6);
+        className = className.replace('/', '.');
+        return className;
+    }
+
+    /**
+     * Getter for property 'loadedPlugins'.
+     *
+     * @return HashMap that contains loaded plugins.
+     */
     public Map<String, IPlugin> getLoadedPlugins() {
         return loadedPlugins;
     }

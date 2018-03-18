@@ -5,7 +5,6 @@ import han.ica.asd.domain.Question;
 import han.ica.asd.domain.interfaces.IPlugin;
 import han.ica.asd.domain.interfaces.IQuestionView;
 import han.ica.asd.utility.PluginHandler;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -25,6 +24,13 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Controller for the PerformExam view.
+ * <p>
+ * Here the user can perform on an exam where the questions use dynamically loaded plugins for each type of question.
+ * <p>
+ * If the user finishes the exam, than the user can press on a button to convert it to JSON text.
+ */
 public class PerformExamController {
 
     private static final Logger logger = Logger.getLogger(PerformExamController.class.getName());
@@ -38,17 +44,31 @@ public class PerformExamController {
     private PluginHandler pluginHandler = new PluginHandler();
     private Exam currentExam;
 
-    void setupPane(Map<String, Object> namespace) throws IOException {
-        if (!namespace.isEmpty()) {
-            questionsPane = (VBox) namespace.get("questionsPane");
-            rootUI = (VBox) namespace.get("rootUI");
-            pluginHandler.loadPlugins();
-            getExam();
-        } else {
-            logger.log(Level.SEVERE, "Error while retrieving namespace!");
+    /**
+     * Setup the Pane for starting the exam. Namespace makes sure that the questionsPane and root ui can be used.
+     * <p>
+     * Loads the available plugins into HashMap which will be used while creating the exam and the questions.
+     *
+     * @param namespace A set of elements that contains in the main Pane of the view.
+     */
+    void setupPane(Map<String, Object> namespace) {
+        try {
+            if (!namespace.isEmpty()) {
+                questionsPane = (VBox) namespace.get("questionsPane");
+                rootUI = (VBox) namespace.get("rootUI");
+                pluginHandler.loadPlugins();
+                getExam();
+            } else {
+                logger.log(Level.SEVERE, "Error while retrieving namespace!");
+            }
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Something happened while setting up the pane.", ex);
         }
     }
 
+    /**
+     * Get current exam from json file.
+     */
     private void getExam() throws IOException {
         JSONParser jsonParser = new JSONParser();
 
@@ -64,13 +84,19 @@ public class PerformExamController {
             JSONArray questionsJsonArray = (JSONArray) jsonObject.get("questions");
 
             currentExam = new Exam(name, course);
-            currentExam.setQuestions(getQuestions(questionsJsonArray, currentExam));
+            currentExam.setQuestions(getQuestions(questionsJsonArray));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private Question[] getQuestions(JSONArray questionsJsonArray, Exam exam) {
+    /**
+     * Create questions that are present in the exam based on the loaded plugins.
+     *
+     * @param questionsJsonArray JSON array containing data of each question present in the exam.
+     * @return Array of domain questions present in the exam.
+     */
+    private Question[] getQuestions(JSONArray questionsJsonArray) {
         List<Question> questionList = new ArrayList<>();
 
         for (Object object : questionsJsonArray) {
@@ -90,7 +116,7 @@ public class PerformExamController {
                 questionView = plugin.createQuestionView(question);
 
             } catch (Exception ex) {
-                ex.printStackTrace();
+                logger.log(Level.SEVERE, "Something happened while creating questions.", ex);
             }
 
             if (questionsPane != null && questionView != null) {
@@ -106,7 +132,10 @@ public class PerformExamController {
         return questionList.toArray(questions);
     }
 
-    public void backToMenu(ActionEvent actionEvent) throws IOException {
+    /**
+     * Return back to menu.
+     */
+    public void backToMenu() throws IOException {
         Stage window = (Stage) rootUI.getScene().getWindow();
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/menu.fxml"));
@@ -115,17 +144,17 @@ public class PerformExamController {
         window.setScene(new Scene(root, 600, 400));
     }
 
+    /**
+     * Convert givenanswer from each question in the exam to JSON string.
+     */
     @SuppressWarnings("unchecked")
-    public void convertToText(ActionEvent actionEvent) {
-        int questionNum = 0;
-
+    public void convertToText() {
         JSONObject examJSON = new JSONObject();
         examJSON.put("name", currentExam.getName());
         examJSON.put("course", currentExam.getCourse());
 
         JSONArray questionsJSONArray = new JSONArray();
         for (Question question : currentExam.getQuestions()) {
-//            System.out.println("Question " + ++questionNum + " - points: " + question.getPoints() + "\n :phrasing: " + question.getQuestionPhrasing() + " questionType: " + question.getQuestionType());
             JSONObject questionJSON = new JSONObject();
 
             questionJSON.put("questionType", question.getQuestionType());
@@ -136,8 +165,7 @@ public class PerformExamController {
 
         examJSON.put("questions", questionsJSONArray);
 
-
-        System.out.println(examJSON.toJSONString());
+        logger.log(Level.INFO, "JSON printed from converted answer: \n" + examJSON.toJSONString());
     }
 }
 
