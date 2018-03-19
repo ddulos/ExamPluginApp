@@ -21,7 +21,7 @@ public interface IPlugin {
      * @param questionType What kind of question it is. This is represented by the plugin itself.
      * @return The newly created question based of the defined questiontype.
      */
-    IQuestionType createQuestion(String questionPhrase, int points, JSONObject context, String questionType);
+    Question createQuestion(String questionPhrase, int points, JSONObject context, String questionType);
 
     /**
      * Here the view for the question will be created, which the user can use to answer the question.

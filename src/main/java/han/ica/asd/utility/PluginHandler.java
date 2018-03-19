@@ -59,14 +59,14 @@ public class PluginHandler {
             Enumeration<JarEntry> entries = new JarFile(pathToJar).entries();
 
             URL[] urls = {new URL("jar:file:" + pathToJar + "!/")};
-            URLClassLoader urlClassLoader = URLClassLoader.newInstance(urls);
+            URLClassLoader classLoader = URLClassLoader.newInstance(urls);
 
             while (entries.hasMoreElements()) {
                 JarEntry jarEntry = entries.nextElement();
                 if (!jarEntry.getName().endsWith(".class"))
                     continue;
 
-                loadPluginClass(urlClassLoader, getClassName(jarEntry));
+                loadPluginClass(classLoader, getClassName(jarEntry));
             }
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Something went wrong while loading classes.", e);

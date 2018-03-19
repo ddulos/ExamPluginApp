@@ -6,7 +6,7 @@
       "givenAnswer": {
         "answers: ": [
           {
-            "freeInput-1": "Antwoord"
+            "freeInput-1": ""
           }
         ]
       },
@@ -17,10 +17,10 @@
       "givenAnswer": {
         "answers: ": [
           {
-            "freeInput-3": "Antwoord"
+            "freeInput-3": ""
           },
           {
-            "freeInput-2": "Antwoord"
+            "freeInput-2": ""
           }
         ]
       },

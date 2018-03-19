@@ -112,7 +112,7 @@ public class PerformExamController {
             IQuestionView questionView = null;
             try {
                 IPlugin plugin = pluginHandler.getLoadedPlugins().get(questionType);
-                question = (Question) plugin.createQuestion(questionPhrasing, points, context, questionType);
+                question = plugin.createQuestion(questionPhrasing, points, context, questionType);
                 questionView = plugin.createQuestionView(question);
 
             } catch (Exception ex) {

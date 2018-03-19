@@ -1,6 +1,5 @@
 package han.ica.asd.domain;
 
-import han.ica.asd.domain.interfaces.IQuestionType;
 import org.json.simple.JSONObject;
 
 /**
@@ -8,8 +7,8 @@ import org.json.simple.JSONObject;
  * <p>
  * Used by plugins to create many types of questions.
  */
-public abstract class Question implements IQuestionType {
-    private String questionPhrase;
+public abstract class Question {
+    private String questionPhrasing;
     private int points;
     private JSONObject context;
     private String questionType;
@@ -17,13 +16,13 @@ public abstract class Question implements IQuestionType {
     /**
      * Constructor for Question
      *
-     * @param questionPhrase The text that is the question itself.
+     * @param questionPhrasing The text that is the question itself.
      * @param points         The total points to earn on this question.
      * @param context        JSONObject that contains extra options or information for the questiontype.
      * @param questionType   What kind of question it is. This is represented by the plugin itself.
      */
-    protected Question(String questionPhrase, int points, JSONObject context, String questionType) {
-        this.questionPhrase = questionPhrase;
+    protected Question(String questionPhrasing, int points, JSONObject context, String questionType) {
+        this.questionPhrasing = questionPhrasing;
         this.points = points;
         this.context = context;
         this.questionType = questionType;
@@ -35,7 +34,7 @@ public abstract class Question implements IQuestionType {
      * @return The text that is the question itself.
      */
     public String getQuestionPhrasing() {
-        return questionPhrase;
+        return questionPhrasing;
     }
 
     /**
@@ -64,4 +63,18 @@ public abstract class Question implements IQuestionType {
     public String getQuestionType() {
         return questionType;
     }
+
+    /**
+     * Getter for property 'givenAnswer'.
+     *
+     * @return Answer given by the user converted from the Pane.
+     */
+    public abstract JSONObject getGivenAnswer();
+
+    /**
+     * Check the given answer with the correct answer.
+     *
+     * @return Points given based on the given answer.
+     */
+    public abstract int checkGivenAnswer();
 }
