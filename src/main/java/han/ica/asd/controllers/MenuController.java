@@ -1,5 +1,6 @@
 package han.ica.asd.controllers;
 
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -16,6 +17,7 @@ import static java.lang.System.out;
  */
 public class MenuController {
 
+    @FXML
     public VBox mainPane;
 
     /**
@@ -37,14 +39,14 @@ public class MenuController {
     }
 
     /**
-     * Unavailable option, when pressed would open the view to check an exam.
+     * Unavailable option - When pressed would open the view to check an exam.
      */
     public void checkExamTest() {
         out.println("Not available.");
     }
 
     /**
-     * Unavailable option, when pressed would open the view to review an exam.
+     * Unavailable option - When pressed would open the view to review an exam.
      */
     public void reviewExamTest() {
         out.println("Not available.");

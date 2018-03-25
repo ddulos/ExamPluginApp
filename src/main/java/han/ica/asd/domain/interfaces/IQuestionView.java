@@ -9,15 +9,15 @@ public interface IQuestionView {
     /**
      * @return The Pane that contains the question itself with input possibilities to answer the question.
      */
-    Pane getView();
+    Pane getExamPane();
 
     /**
-     * @return The Pane that contains the question itself with possibilities to give feedback about an given answer on the question.
+     * @return The Pane that contains the question itself with the possibility to check an exam and give feedback about an given answer on the question.
      */
-    Pane getFeedbackView();
+    Pane getCheckExamPane();
 
     /**
-     * @return The Pane that contains the question itself with the correct answer shown and the possibility to review the given answer.
+     * @return The Pane that contains the question itself with the possibility to review the given answer.
      */
-    Pane getCorrectAnswerView();
+    Pane getReviewPane();
 }

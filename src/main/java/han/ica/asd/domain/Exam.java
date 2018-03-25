@@ -6,7 +6,7 @@ package han.ica.asd.domain;
 public class Exam {
     private String name;
     private String course;
-    private Question[] questions;
+    private AbstractQuestion[] questions;
 
     /**
      * Constructor for exam.
@@ -60,7 +60,7 @@ public class Exam {
      *
      * @return Array of questions in exam.
      */
-    public Question[] getQuestions() {
+    public AbstractQuestion[] getQuestions() {
         return questions;
     }
 
@@ -69,7 +69,7 @@ public class Exam {
      *
      * @param questions Array of questions in exam.
      */
-    public void setQuestions(Question[] questions) {
+    public void setQuestions(AbstractQuestion[] questions) {
         this.questions = questions;
     }
 }

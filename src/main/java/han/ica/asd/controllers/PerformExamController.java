@@ -1,7 +1,7 @@
 package han.ica.asd.controllers;
 
 import han.ica.asd.domain.Exam;
-import han.ica.asd.domain.Question;
+import han.ica.asd.domain.AbstractQuestion;
 import han.ica.asd.domain.interfaces.IPlugin;
 import han.ica.asd.domain.interfaces.IQuestionView;
 import han.ica.asd.utility.PluginHandler;
@@ -96,23 +96,18 @@ public class PerformExamController {
      * @param questionsJsonArray JSON array containing data of each question present in the exam.
      * @return Array of domain questions present in the exam.
      */
-    private Question[] getQuestions(JSONArray questionsJsonArray) {
-        List<Question> questionList = new ArrayList<>();
+    private AbstractQuestion[] getQuestions(JSONArray questionsJsonArray) {
+        List<AbstractQuestion> questionList = new ArrayList<>();
 
         for (Object object : questionsJsonArray) {
             JSONObject questionJson = (JSONObject) object;
-
-            String questionPhrasing = (String) questionJson.get("questionPhrasing");
-            int points = Integer.parseInt(String.valueOf(questionJson.get("points")));
-
             String questionType = (String) questionJson.get("questionType");
-            JSONObject context = (JSONObject) questionJson.get("questionContext");
 
-            Question question = null;
+            AbstractQuestion question = null;
             IQuestionView questionView = null;
             try {
                 IPlugin plugin = pluginHandler.getLoadedPlugins().get(questionType);
-                question = plugin.createQuestion(questionPhrasing, points, context, questionType);
+                question = plugin.createQuestion(questionJson);
                 questionView = plugin.createQuestionView(question);
 
             } catch (Exception ex) {
@@ -120,14 +115,14 @@ public class PerformExamController {
             }
 
             if (questionsPane != null && questionView != null) {
-                questionsPane.getChildren().add(questionView.getView());
+                questionsPane.getChildren().add(questionView.getExamPane());
             } else {
                 logger.log(Level.SEVERE, "Error while adding child to pane!");
             }
 
             questionList.add(question);
         }
-        Question[] questions = new Question[questionList.size()];
+        AbstractQuestion[] questions = new AbstractQuestion[questionList.size()];
 
         return questionList.toArray(questions);
     }
@@ -154,7 +149,7 @@ public class PerformExamController {
         examJSON.put("course", currentExam.getCourse());
 
         JSONArray questionsJSONArray = new JSONArray();
-        for (Question question : currentExam.getQuestions()) {
+        for (AbstractQuestion question : currentExam.getQuestions()) {
             JSONObject questionJSON = new JSONObject();
 
             questionJSON.put("questionType", question.getQuestionType());
