@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox fx:id="mainPane" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+      prefHeight="400.0" prefWidth="600.0" spacing="8" xmlns="http://javafx.com/javafx/8.0.71"
+      fx:controller="han.ica.asd.controllers.MenuController"
+      xmlns:fx="http://javafx.com/fxml/1">
+    <Label text="Toets plugin applicatie" textAlignment="CENTER">
+        <font>
+            <Font size="28.0"/>
+        </font>
+    </Label>
+    <Button text="Toets voorbeeld" onAction="#performExamTest"/>
+    <Button text="Nakijk voorbeeld" onAction="#checkExamTest"/>
+    <Button text="Review voorbeeld" onAction="#reviewExamTest"/>
+</VBox>
